@@ -6,7 +6,7 @@ import {
     Parameters,
 } from 'dockview-core';
 
-class DefaultPanel implements IContentRenderer {
+export class DefaultPanel implements IContentRenderer {
     private _element: HTMLElement;
 
     get element(): HTMLElement {
