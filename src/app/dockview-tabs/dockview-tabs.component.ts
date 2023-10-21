@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, ViewChild } from '@angular/core';
 import { DockviewComponent } from 'dockview-core';
 import { DefaultPanel } from '../dockiewService';
+import { DockviewTabContent } from '../dockview-tab-content/dockview-tab-content.renderer';
 
 @Component({
   selector: 'app-dockview-tabs',
@@ -9,15 +10,16 @@ import { DefaultPanel } from '../dockiewService';
 })
 export class DockviewTabsComponent implements AfterViewInit {
   @ViewChild('dockviewroot', { static: false }) divDockViewRoot?: ElementRef;
-
+  
   constructor() {
-
+    
   }
   ngAfterViewInit() {
     if (this.divDockViewRoot) {
       const dockview = new DockviewComponent({
         components: {
           default: DefaultPanel,
+          tab1:DockviewTabContent
         },
         parentElement: this.divDockViewRoot.nativeElement,
       });
@@ -26,15 +28,16 @@ export class DockviewTabsComponent implements AfterViewInit {
 
       dockview.addPanel({
         id: 'panel_1',
-        component: 'default',
+        component: 'tab1',
         params: {
           title: 'Panel 1',
+          
         },
       });
 
       dockview.addPanel({
         id: 'panel_2',
-        component: 'default',
+        component: 'tab1',
         params: {
           title: 'Panel 2',
         },
