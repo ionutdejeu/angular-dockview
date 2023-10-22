@@ -1,5 +1,15 @@
-import { AddPanelOptions } from "dockview-core";
+import { Type } from "@angular/core";
+import { Parameters } from "dockview-core";
 
-export interface DockviewPanelOptions {
-    title: string;
+export class DockViewTabItem {
+    constructor(
+        public id: string,
+        public componentKey: string,
+        public component: Type<any>,
+        public params: Parameters) { }
+}
+
+
+export interface DockviewTabPanelOptions {
+    params: Parameters;
 }

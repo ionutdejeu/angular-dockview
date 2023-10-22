@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentRef, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, ElementRef, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { IContentRenderer, IGroupPanelInitParameters, PanelUpdateEvent, Parameters } from 'dockview-core';
 
 @Component({
@@ -6,7 +6,7 @@ import { IContentRenderer, IGroupPanelInitParameters, PanelUpdateEvent, Paramete
   templateUrl: './dockview-tab-content.component.html',
   styleUrls: ['./dockview-tab-content.component.css']
 })
-export class DockviewTabContentComponent implements IContentRenderer, AfterViewInit {
+export class DockviewTabContentComponent implements IContentRenderer, AfterViewInit,OnDestroy {
   private _element: HTMLElement;
   @ViewChild('dockviewTabContentRoot', { static: false }) divDockViewRoot?: ElementRef;
   @ViewChild('tabContentContainerRef', { read: ViewContainerRef }) tabContent?: ViewContainerRef;
@@ -19,6 +19,9 @@ export class DockviewTabContentComponent implements IContentRenderer, AfterViewI
     this._element = document.createElement('div');
     this._element.style.padding = '20px';
     this._element.style.color = 'white';
+  }
+  ngOnDestroy(): void {
+    console.log('destroyed')
   }
   
   ngAfterViewInit(): void {

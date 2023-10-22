@@ -9,6 +9,8 @@ import { DynamicCompParentComponent } from './dynamic-comp-parent/dynamic-comp-p
 import { DynamicCompChildComponent } from './dynamic-comp-child/dynamic-comp-child.component';
 import { AdDirective } from './add-directive/ad-directive.directive';
 import { DynamicCompService } from './dynamic-comp-parent/dynamic-comp.service';
+import { DockViewTabsService } from './dockview-tabs/dockview-tabs.service';
+import { DockViewTabContentHostDirective } from './dockview-tab-content-host-directive/dockview-tab-content-host.directive';
 
 @NgModule({
   declarations: [
@@ -16,14 +18,14 @@ import { DynamicCompService } from './dynamic-comp-parent/dynamic-comp.service';
     DockviewTabsComponent,
     DockviewTabContentComponent,
     DynamicCompParentComponent,
-    DynamicCompChildComponent,
+    DynamicCompChildComponent,DockViewTabContentHostDirective,
     AdDirective
   ],
   imports: [
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [DynamicCompService],
+  providers: [DynamicCompService,DockViewTabsService],
   bootstrap: [AppComponent],
 
 })

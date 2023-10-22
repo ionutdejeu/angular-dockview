@@ -1,84 +1,67 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ComponentFactoryResolver, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { DockviewComponent } from 'dockview-core';
 import { DefaultPanel } from '../dockiewService';
 import { DockviewTabContent } from '../dockview-tab-content/dockview-tab-content.renderer';
+import { DockViewTabsService } from './dockview-tabs.service';
+import { DockViewTabContentHostDirective } from '../dockview-tab-content-host-directive/dockview-tab-content-host.directive';
+import { DockviewTabContentComponent } from '../dockview-tab-content/dockview-tab-content.component';
 
 @Component({
   selector: 'app-dockview-tabs',
   templateUrl: './dockview-tabs.component.html',
   styleUrls: ['./dockview-tabs.component.css']
 })
-export class DockviewTabsComponent implements AfterViewInit {
-  @ViewChild('dockviewroot', { static: false }) divDockViewRoot?: ElementRef;
-  
-  constructor() {
-    
+export class DockviewTabsComponent implements AfterViewInit, OnInit, AfterViewChecked {
+  @ViewChild('dockviewroot', { static: false }) divDockViewRoot?: ElementRef<HTMLDivElement>;
+  @ViewChild(DockViewTabContentHostDirective, { static: true }) hostContent!: DockViewTabContentHostDirective;
+
+  @ViewChildren(DockViewTabContentHostDirective)
+  private hostTabsContent!: QueryList<DockViewTabContentHostDirective>;
+
+  constructor(private dockViewTabsService: DockViewTabsService) {
+
+  }
+  ngAfterViewChecked(): void {
+
+  }
+  ngOnInit(): void {
+
   }
   ngAfterViewInit() {
     if (this.divDockViewRoot) {
       const dockview = new DockviewComponent({
         components: {
-          default: DefaultPanel,
-          tab1:DockviewTabContent
+          default: DockviewTabContent,
+          tab1: DockviewTabContent,
+          tab2: DockviewTabContent
         },
+
         parentElement: this.divDockViewRoot.nativeElement,
       });
       const { clientWidth, clientHeight } = this.divDockViewRoot.nativeElement;
       dockview.layout(clientWidth, clientHeight);
 
-      dockview.addPanel({
-        id: 'panel_1',
-        component: 'tab1',
-        params: {
-          title: 'Panel 1',
-          
-        },
-      });
+      for (let tabItem of this.dockViewTabsService.getListOfComponent()) {
+        dockview.addPanel({
+          id: tabItem.id,
+          component: tabItem.componentKey,
+          params: {
+            title: 'Panel' + tabItem.id,
+            item: tabItem,
+          },
+        });
+      }
+      for (let p of dockview.panels) {
+        let tabContentComponentInstance = this.hostContent.viewContainerRef.createComponent<DockviewTabContentComponent>(DockviewTabContentComponent)
+        p.view.content.element.appendChild(tabContentComponentInstance.location.nativeElement);
+        let viewComp = p.view.content as any
+        viewComp.onDestroy.subscribe(() => {
+          tabContentComponentInstance.destroy()
+        })
 
-      dockview.addPanel({
-        id: 'panel_2',
-        component: 'tab1',
-        params: {
-          title: 'Panel 2',
-        },
-      });
+      }
+      //console.log('dom query', this.divDockViewRoot.nativeElement.querySelectorAll('div.dockview-tab-content-host'))
 
-      dockview.addPanel({
-        id: 'panel_3',
-        component: 'default',
-        params: {
-          title: 'Panel 3',
-        },
-        position: { referencePanel: 'panel_1', direction: 'right' },
-      });
-
-      dockview.addPanel({
-        id: 'panel_4',
-        component: 'default',
-        params: {
-          title: 'Panel 4',
-        },
-        position: { referencePanel: 'panel_3', direction: 'right' },
-      });
-
-      dockview.addPanel({
-        id: 'panel_5',
-        component: 'default',
-        params: {
-          title: 'Panel 5',
-        },
-        position: { referencePanel: 'panel_4', direction: 'below' },
-      });
-
-      dockview.addPanel({
-        id: 'panel_6',
-        component: 'default',
-        params: {
-          title: 'Panel 6',
-        },
-        position: { referencePanel: 'panel_5', direction: 'right' },
-      });
     }
-
   }
 }
